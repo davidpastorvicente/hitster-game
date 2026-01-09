@@ -4,6 +4,7 @@ import './GameSetup.css';
 export default function GameSetup({ onStartGame }) {
   const [numTeams, setNumTeams] = useState(2);
   const [teamNames, setTeamNames] = useState(['Team 1', 'Team 2']);
+  const [winningScore, setWinningScore] = useState(10);
 
   const handleNumTeamsChange = (num) => {
     setNumTeams(num);
@@ -20,7 +21,7 @@ export default function GameSetup({ onStartGame }) {
   };
 
   const handleStart = () => {
-    onStartGame(teamNames);
+    onStartGame(teamNames, winningScore);
   };
 
   return (
@@ -59,6 +60,21 @@ export default function GameSetup({ onStartGame }) {
           </div>
         </div>
 
+        <div className="form-group">
+          <label>Songs to Win:</label>
+          <div className="team-selector">
+            {[5, 10, 15, 20].map(num => (
+              <button
+                key={num}
+                className={winningScore === num ? 'active' : ''}
+                onClick={() => setWinningScore(num)}
+              >
+                {num}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <button className="start-button" onClick={handleStart}>
           Start Game
         </button>
@@ -70,7 +86,7 @@ export default function GameSetup({ onStartGame }) {
           <li>Listen to a song and guess when it was released</li>
           <li>Place it in your timeline (before, between, or after existing songs)</li>
           <li>If you're correct, the song stays in your timeline</li>
-          <li>The team with the longest timeline wins!</li>
+          <li>First team to reach the target number of songs wins!</li>
         </ul>
       </div>
     </div>

@@ -129,3 +129,94 @@
 .next-turn-button:hover {
   background: #5568d3;
 }
+
+.game-over {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.winner-announcement {
+  background: white;
+  padding: 3rem;
+  border-radius: 16px;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.5s;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.winner-announcement h2 {
+  font-size: 2rem;
+  color: #667eea;
+  margin: 0 0 1rem 0;
+}
+
+.winner-announcement h1 {
+  font-size: 3rem;
+  color: #ff6b6b;
+  margin: 0 0 1rem 0;
+}
+
+.winner-announcement > p {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.final-timeline {
+  margin: 2rem 0;
+}
+
+.final-timeline h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.play-again-button {
+  padding: 1rem 3rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-top: 2rem;
+}
+
+.play-again-button:hover {
+  transform: scale(1.05);
+}
+

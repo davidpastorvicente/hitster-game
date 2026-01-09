@@ -5,7 +5,7 @@ import SongPlayer from './SongPlayer';
 import PlacementButtons from './PlacementButtons';
 import './GameBoard.css';
 
-export default function GameBoard({ teams }) {
+export default function GameBoard({ teams, winningScore }) {
   const [currentTeamIndex, setCurrentTeamIndex] = useState(0);
   const [currentSong, setCurrentSong] = useState(null);
   const [teamTimelines, setTeamTimelines] = useState(
@@ -15,6 +15,7 @@ export default function GameBoard({ teams }) {
   const [gamePhase, setGamePhase] = useState('playing');
   const [lastPlacement, setLastPlacement] = useState(null);
   const [scores, setScores] = useState(teams.map(() => 0));
+  const [winner, setWinner] = useState(null);
 
   useEffect(() => {
     drawNewSong();
@@ -46,6 +47,12 @@ export default function GameBoard({ teams }) {
       setScores(newScores);
       
       setLastPlacement({ correct: true, position });
+      
+      if (newScores[currentTeamIndex] >= winningScore) {
+        setWinner(currentTeamIndex);
+        setGamePhase('gameOver');
+        return;
+      }
     } else {
       setLastPlacement({ correct: false, position });
     }
@@ -82,15 +89,34 @@ export default function GameBoard({ teams }) {
               className={`score ${index === currentTeamIndex ? 'active' : ''}`}
             >
               <span className="team-name">{team}</span>
-              <span className="score-value">{scores[index]} songs</span>
+              <span className="score-value">{scores[index]} / {winningScore} songs</span>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="current-turn">
-        <h2>Current Turn: {currentTeam}</h2>
-      </div>
+      {gamePhase === 'gameOver' && winner !== null && (
+        <div className="game-over">
+          <div className="winner-announcement">
+            <h2>🎉 Game Over! 🎉</h2>
+            <h1>{teams[winner]} Wins!</h1>
+            <p>They reached {winningScore} songs in their timeline!</p>
+            <div className="final-timeline">
+              <h3>Winning Timeline:</h3>
+              <Timeline timeline={teamTimelines[winner]} showYears={true} />
+            </div>
+            <button className="play-again-button" onClick={() => window.location.reload()}>
+              Play Again
+            </button>
+          </div>
+        </div>
+      )}
+
+      {gamePhase !== 'gameOver' && (
+        <>
+          <div className="current-turn">
+            <h2>Current Turn: {currentTeam}</h2>
+          </div>
 
       {currentSong && gamePhase === 'playing' && (
         <div className="song-section">
@@ -117,7 +143,7 @@ export default function GameBoard({ teams }) {
             ) : (
               <>
                 <h2>❌ Wrong!</h2>
-                <p>{currentSong.title} was released in {currentSong.year}</p>
+                <p>{currentSong.title} was released in <b>{currentSong.year}</b></p>
                 <p>Better luck next time!</p>
               </>
             )}
@@ -132,6 +158,8 @@ export default function GameBoard({ teams }) {
             Next Turn
           </button>
         </div>
+      )}
+      </>
       )}
     </div>
   );

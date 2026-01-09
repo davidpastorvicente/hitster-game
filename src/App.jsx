@@ -6,9 +6,11 @@ import './App.css'
 function App() {
   const [gameStarted, setGameStarted] = useState(false)
   const [teams, setTeams] = useState([])
+  const [winningScore, setWinningScore] = useState(10)
 
-  const handleStartGame = (teamNames) => {
+  const handleStartGame = (teamNames, targetScore) => {
     setTeams(teamNames)
+    setWinningScore(targetScore)
     setGameStarted(true)
   }
 
@@ -17,7 +19,7 @@ function App() {
       {!gameStarted ? (
         <GameSetup onStartGame={handleStartGame} />
       ) : (
-        <GameBoard teams={teams} />
+        <GameBoard teams={teams} winningScore={winningScore} />
       )}
     </div>
   )
