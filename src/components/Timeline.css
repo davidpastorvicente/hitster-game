@@ -1,0 +1,63 @@
+.timeline {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  overflow-x: auto;
+  min-height: 120px;
+}
+
+.timeline.empty {
+  justify-content: center;
+  color: #999;
+  font-style: italic;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.song-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  min-width: 180px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.song-card:hover {
+  transform: translateY(-2px);
+}
+
+.song-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.song-title {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.song-artist {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+.song-year {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-top: 0.5rem;
+  color: #ffd700;
+}
+
+.timeline-arrow {
+  font-size: 1.5rem;
+  color: #667eea;
+  font-weight: bold;
+}

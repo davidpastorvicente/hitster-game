@@ -1,0 +1,119 @@
+.game-setup {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.game-setup h1 {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: #ff6b6b;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.setup-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 2rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.team-selector {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.team-selector button {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.team-selector button:hover {
+  border-color: #ff6b6b;
+}
+
+.team-selector button.active {
+  background: #ff6b6b;
+  color: white;
+  border-color: #ff6b6b;
+}
+
+.team-names {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.team-names input {
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.team-names input:focus {
+  outline: none;
+  border-color: #ff6b6b;
+}
+
+.start-button {
+  padding: 1rem 3rem;
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.start-button:hover {
+  background: #ff5252;
+}
+
+.rules {
+  background: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.rules h3 {
+  margin-top: 0;
+  color: #ff6b6b;
+}
+
+.rules ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.rules li {
+  margin-bottom: 0.5rem;
+}
