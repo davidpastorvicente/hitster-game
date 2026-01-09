@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { getRandomSong } from '../data/songs';
+import { useState, useEffect, useCallback } from 'react';
+import { getCuratedSongs } from '../services/spotifyService';
 import Timeline from './Timeline';
 import SongPlayer from './SongPlayer';
 import PlacementButtons from './PlacementButtons';
@@ -11,23 +11,50 @@ export default function GameBoard({ teams, winningScore }) {
   const [teamTimelines, setTeamTimelines] = useState(
     teams.map(() => [])
   );
+  const [availableSongs, setAvailableSongs] = useState([]);
   const [usedSongIds, setUsedSongIds] = useState([]);
-  const [gamePhase, setGamePhase] = useState('playing');
+  const [gamePhase, setGamePhase] = useState('loading');
   const [lastPlacement, setLastPlacement] = useState(null);
   const [scores, setScores] = useState(teams.map(() => 0));
   const [winner, setWinner] = useState(null);
 
-  useEffect(() => {
-    drawNewSong();
-  }, []);
+  const drawNewSong = useCallback((songs, usedIds) => {
+    const availableToPlay = songs.filter(song => !usedIds.includes(song.id));
 
-  const drawNewSong = () => {
-    const song = getRandomSong(usedSongIds);
+    if (availableToPlay.length === 0) {
+      setGamePhase('gameOver');
+      return;
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableToPlay.length);
+    const song = availableToPlay[randomIndex];
+
     setCurrentSong(song);
-    setUsedSongIds([...usedSongIds, song.id]);
+    setUsedSongIds([...usedIds, song.id]);
     setGamePhase('playing');
     setLastPlacement(null);
-  };
+  }, []);
+
+  const loadSongs = useCallback(async () => {
+    try {
+      setGamePhase('loading');
+      const songs = await getCuratedSongs();
+      setAvailableSongs(songs);
+      if (songs.length > 0) {
+        drawNewSong(songs, []);
+      } else {
+        setGamePhase('error');
+      }
+    } catch (error) {
+      console.error('Error loading songs:', error);
+      setGamePhase('error');
+    }
+  }, [drawNewSong]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadSongs();
+  }, [loadSongs]);
 
   const handlePlacement = (position) => {
     const currentTimeline = teamTimelines[currentTeamIndex];
@@ -72,7 +99,7 @@ export default function GameBoard({ teams, winningScore }) {
   const handleNextTurn = () => {
     const nextTeamIndex = (currentTeamIndex + 1) % teams.length;
     setCurrentTeamIndex(nextTeamIndex);
-    drawNewSong();
+    drawNewSong(availableSongs, usedSongIds);
   };
 
   const currentTeam = teams[currentTeamIndex];
@@ -95,6 +122,27 @@ export default function GameBoard({ teams, winningScore }) {
         </div>
       </div>
 
+      {gamePhase === 'loading' && (
+        <div className="loading-screen">
+          <div className="loading-content">
+            <h2>🎵 Loading Songs from Spotify...</h2>
+            <div className="loading-spinner"></div>
+          </div>
+        </div>
+      )}
+
+      {gamePhase === 'error' && (
+        <div className="error-screen">
+          <div className="error-content">
+            <h2>❌ Error Loading Songs</h2>
+            <p>Please check your Spotify API credentials and try again.</p>
+            <button className="retry-button" onClick={loadSongs}>
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
+
       {gamePhase === 'gameOver' && winner !== null && (
         <div className="game-over">
           <div className="winner-announcement">
@@ -112,7 +160,7 @@ export default function GameBoard({ teams, winningScore }) {
         </div>
       )}
 
-      {gamePhase !== 'gameOver' && (
+      {gamePhase !== 'gameOver' && gamePhase !== 'loading' && gamePhase !== 'error' && (
         <>
           <div className="current-turn">
             <h2>Current Turn: {currentTeam}</h2>
