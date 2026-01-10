@@ -66,11 +66,13 @@
 .team-names {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.5rem;
 }
 
 .team-names input {
   padding: 0.75rem;
+  width: 250px;
   border: 2px solid #ddd;
   border-radius: 8px;
   font-size: 1rem;
