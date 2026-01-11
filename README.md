@@ -12,7 +12,7 @@ A music guessing game where teams build timelines by placing songs in chronologi
 
 ## 🎵 Song Library
 
-The game includes **251 curated songs** (125 English, 126 Spanish/Latin):
+The game includes **291 curated songs** (125 English, 166 Spanish/Latin):
 
 **English Songs:**
 - 1960s-1990s: Classic hits from The Beatles, Queen, Michael Jackson, Nirvana
@@ -21,7 +21,14 @@ The game includes **251 curated songs** (125 English, 126 Spanish/Latin):
 **Spanish/Latin Songs:**
 - Heavy emphasis on reggaeton and Latin pop
 - Artists: Bad Bunny, Karol G, Ozuna, Rauw Alejandro, Maluma, ROSALÍA, Shakira
-- Focus on post-2000 music with 66 songs from 2020s alone
+- Spanish pop/rock: La Oreja de Van Gogh, Amaral, El Canto del Loco, Mecano, Héroes del Silencio
+- Focus on post-2000 music with 70+ songs from 2020s alone
+
+## 🎧 Audio Playback
+
+- **Deezer API**: 290 songs (99%) play ad-free 30-second previews via Deezer
+- **YouTube Fallback**: 1 song uses YouTube embed (may show ads)
+- Preview URLs are fetched dynamically for freshness
 
 ## 🚀 Getting Started
 
@@ -39,7 +46,8 @@ npm run dev
 
 - **React** - UI framework
 - **Vite** - Build tool
-- **YouTube Embeds** - Audio playback
+- **Deezer API** - Ad-free audio previews (30 seconds)
+- **YouTube Embeds** - Fallback audio playback
 - **CSS3** - Styling with modern gradients
 
 ## 📝 Features
@@ -67,24 +75,25 @@ To add songs, simply edit `src/data/songs.js` and add entries **without YouTube 
 }
 ```
 
-Then run the automatic YouTube ID updater:
+Then run the automatic Deezer and YouTube ID updater:
 
 ```bash
-python3 update-youtube-ids.py
+python3 update-ids.py
 ```
 
-The script will automatically fetch the correct YouTube ID from YouTube Music and update the file. See `YOUTUBE_ID_UPDATER_README.md` for details.
+The script will automatically fetch the correct Deezer and YouTube ID and update the file.
 
-### Manual YouTube ID Entry
+### Manual ID Entry
 
-You can also add songs with YouTube IDs directly:
+You can also add songs with IDs directly:
 
 ```javascript
 {
   title: "Your Song Title",
   artist: "Artist Name",
   year: 2024,
-  youtubeId: "youtube_video_id"
+  youtubeId: "ID",
+  deezerId: "ID"
 }
 ```
 

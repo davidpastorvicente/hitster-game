@@ -219,7 +219,6 @@ export const songs = [
   { title: "Tusa", artist: "Karol G ft. Nicki Minaj", year: 2019, youtubeId: "SRkr9PyBBuU", deezerId: "796342592" },
   { title: "Ay, DiOs Mío!", artist: "Karol G", year: 2019, youtubeId: "63VIpd19Tos", deezerId: "1012504022" },
   { title: "Location", artist: "Karol G ft. Anuel AA & J Balvin", year: 2019, youtubeId: "6lTcGLdPrg8", deezerId: "1233167142" },
-  { title: "Pineapple", artist: "Karol G ft. Anuel AA", year: 2018, youtubeId: "tkYnyh5LIWo" },
   { title: "Mi Cama", artist: "Karol G ft. J Balvin & Nicky Jam", year: 2018, youtubeId: "r-PXt2jm2F0", deezerId: "525996902" },
   { title: "X", artist: "Nicky Jam & J Balvin", year: 2018, youtubeId: "JPluW_mZ3mo", deezerId: "517799952" },
   { title: "Mi Gente", artist: "J Balvin & Willy William", year: 2017, youtubeId: "uFuAHzHOGYQ", deezerId: "376989861" },
@@ -304,7 +303,7 @@ export const songs = [
   { title: "Relación", artist: "Sech, Daddy Yankee & J Balvin", year: 2019, youtubeId: "wCmy-1aJ1G0", deezerId: "1066959132" },
   { title: "Otro Trago", artist: "Sech ft. Darell", year: 2019, youtubeId: "C7vfCJTQ-rw", deezerId: "664101732" },
   { title: "911", artist: "Sech & Anuel AA", year: 2019, youtubeId: "8lhf_VPlWbs", deezerId: "715415322" },
-  { title: "Ay Dios Mío", artist: "Karol G", year: 2021, youtubeId: "DfI1kEijrr8" },
+  { title: "Ay Dios Mío", artist: "Karol G", year: 2021, youtubeId: "63VIpd19Tos", deezerId: "1012504022" },
   { title: "Pareja del Año", artist: "Sebastián Yatra & Myke Towers", year: 2020, youtubeId: "bQZhDdme-R0", deezerId: "1331984152" },
   { title: "Chica Ideal", artist: "Sebastián Yatra & Guaynaa", year: 2020, youtubeId: "_9p0mIzbJnM", deezerId: "1103857162" },
 ];
