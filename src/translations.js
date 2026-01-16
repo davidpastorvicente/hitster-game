@@ -1,7 +1,7 @@
 export const translations = {
   en: {
     // Game Setup
-    setupTitle: "🎵 Hitster Game Setup",
+    setupTitle: "Hitster",
     setupSubtitle: "Build timelines by placing songs in chronological order!",
     teamsLabel: "Number of Teams:",
     winningScoreLabel: "Winning Score:",
@@ -14,14 +14,11 @@ export const translations = {
     score: "Score",
     
     // Song Player
-    listenSong: "🎶 Listen to the song 🎶",
-    playSong: "Play Song",
-    playHint: "Click to play the mystery song!",
+    playSong: "Play",
     playing: "Playing...",
     paused: "Paused",
     play: "Play",
     pause: "Pause",
-    songHint: "Guess when this song was released and place it in your timeline!",
     
     // Placement Buttons
     placementInstruction: "Where does this song belong in your timeline?",
@@ -38,7 +35,8 @@ export const translations = {
     incorrect: "✗ Incorrect",
     correctPlacement: "Great job! The song has been added to your timeline.",
     incorrectPlacement: "Wrong placement! The song was not added.",
-    actualYear: "The song is from",
+    song: "The song",
+    actualYear: "is from",
     nextTurn: "Next Turn",
     
     // Game Over
@@ -49,7 +47,7 @@ export const translations = {
   },
   es: {
     // Game Setup
-    setupTitle: "🎵 Configuración de Hitster",
+    setupTitle: "Hitster",
     setupSubtitle: "¡Construye líneas de tiempo colocando canciones en orden cronológico!",
     teamsLabel: "Número de Equipos:",
     winningScoreLabel: "Puntuación para Ganar:",
@@ -57,19 +55,16 @@ export const translations = {
     startGameButton: "¡Empezar Juego! 🎮",
     
     // Game Board
-    currentTurn: "Turno Actual:",
-    timeline: "Línea de Tiempo",
+    currentTurn: "Turno actual:",
+    timeline: "Timeline",
     score: "Puntuación",
     
     // Song Player
-    listenSong: "🎶 Escucha la canción 🎶",
-    playSong: "Reproducir Canción",
-    playHint: "¡Haz clic para reproducir la canción misteriosa!",
+    playSong: "Reproducir",
     playing: "Reproduciendo...",
     paused: "Pausado",
     play: "Reproducir",
     pause: "Pausar",
-    songHint: "¡Adivina cuándo se lanzó esta canción y colócala en tu línea de tiempo!",
     
     // Placement Buttons
     placementInstruction: "¿Dónde pertenece esta canción en tu línea de tiempo?",
@@ -86,7 +81,8 @@ export const translations = {
     incorrect: "✗ Incorrecto",
     correctPlacement: "¡Bien hecho! La canción se ha añadido a tu línea de tiempo.",
     incorrectPlacement: "¡Colocación incorrecta! La canción no se añadió.",
-    actualYear: "La canción es de",
+    song: "La canción",
+    actualYear: "es del año",
     nextTurn: "Siguiente Turno",
     
     // Game Over

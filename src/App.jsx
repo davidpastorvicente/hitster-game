@@ -8,7 +8,7 @@ function App() {
   const [gameStarted, setGameStarted] = useState(false)
   const [teams, setTeams] = useState([])
   const [winningScore, setWinningScore] = useState(10)
-  const [language, setLanguage] = useState('en')
+  const [language, setLanguage] = useState('es')
 
   const handleStartGame = (teamNames, targetScore) => {
     setTeams(teamNames)

@@ -51,7 +51,6 @@ export default function SongPlayer({ song, language }) {
 
   return (
     <div className="song-player">
-      <h3>{t.listenSong}</h3>
       {!isYouTube && <audio ref={audioRef} src={song.previewUrl} />}
       {isYouTube && isPlaying && (
         <iframe
@@ -64,33 +63,27 @@ export default function SongPlayer({ song, language }) {
           style={{ display: 'none' }}
         />
       )}
-      <div className="audio-container">
-        {!isPlaying ? (
-          <div className="play-button-container">
-            <button className="play-button" onClick={handlePlayClick}>
-              <span className="play-icon">▶</span>
-              <span>{t.playSong}</span>
-            </button>
-            <p className="play-hint">{t.playHint}</p>
+      {!isPlaying ? (
+        <div className="play-button-container">
+          <button className="play-button" onClick={handlePlayClick}>
+            <span className="play-icon">▶</span>
+            <span>{t.playSong}</span>
+          </button>
+        </div>
+      ) : (
+        <div className="now-playing">
+          <div className={`music-bars ${isPaused ? 'paused' : ''}`}>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
-        ) : (
-          <div className="now-playing">
-            <div className={`music-bars ${isPaused ? 'paused' : ''}`}>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <p>{isPaused ? t.paused : t.playing}</p>
-            <button className="control-button" onClick={togglePlayPause}>
-              {isPaused ? `▶ ${t.play}` : `⏸ ${t.pause}`}
-            </button>
-          </div>
-        )}
-      </div>
-      <div className="song-hint">
-        <p>{t.songHint}</p>
-      </div>
+          <p>{isPaused ? t.paused : t.playing}</p>
+          <button className="control-button" onClick={togglePlayPause}>
+            {isPaused ? `▶ ${t.play}` : `⏸ ${t.pause}`}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

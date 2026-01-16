@@ -30,6 +30,7 @@ export default function GameBoard({ teams, winningScore, language }) {
   const [lastPlacement, setLastPlacement] = useState(null);
   const [scores, setScores] = useState(teams.map(() => 0));
   const [winner, setWinner] = useState(null);
+  const [animationKey, setAnimationKey] = useState(0);
 
   const t = translations[language];
 
@@ -113,6 +114,7 @@ export default function GameBoard({ teams, winningScore, language }) {
 
   const handleNextTurn = async () => {
     const nextTeamIndex = (currentTeamIndex + 1) % teams.length;
+    setAnimationKey(prev => prev + 1); // Trigger re-render for animation
     setCurrentTeamIndex(nextTeamIndex);
     await drawNewSong(availableSongs, usedSongIds);
   };
@@ -124,17 +126,6 @@ export default function GameBoard({ teams, winningScore, language }) {
     <div className="game-board">
       <div className="game-header">
         <h1>Hitster</h1>
-        <div className="scores">
-          {teams.map((team, index) => (
-            <div 
-              key={index} 
-              className={`score ${index === currentTeamIndex ? 'active' : ''}`}
-            >
-              <span className="team-name">{team}</span>
-              <span className="score-value">{scores[index]} / {winningScore} songs</span>
-            </div>
-          ))}
-        </div>
       </div>
 
       {gamePhase === 'gameOver' && winner !== null && (
@@ -156,54 +147,72 @@ export default function GameBoard({ teams, winningScore, language }) {
 
       {gamePhase !== 'gameOver' && (
         <>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
-            <div className="current-turn">
-              <h2>{currentTeam}</h2>
+          <div className="game-content">
+            {/* Left side: Song Player and Placement Buttons */}
+            <div className="song-section">
+              {currentSong && gamePhase === 'playing' && (
+                <>
+                  <SongPlayer song={currentSong} language={language} />
+                  <PlacementButtons 
+                    timeline={currentTimeline}
+                    onPlacement={handlePlacement}
+                    language={language}
+                  />
+                </>
+              )}
+              
+              {gamePhase === 'result' && lastPlacement && (
+                <>
+                  <div className={`result-message ${lastPlacement.correct ? 'correct' : 'incorrect'}`}>
+                    {lastPlacement.correct ? (
+                      <>
+                        <h2>{t.correct}</h2>
+                        <p>{t.correctPlacement}</p>
+                      </>
+                    ) : (
+                      <>
+                        <h2>{t.incorrect}</h2>
+                        <p>{t.song} <b>{currentSong.title} ({currentSong.artist})</b> {t.actualYear} <b>{currentSong.year}</b></p>
+                      </>
+                    )}
+                  </div>
+                  <button className="next-turn-button" onClick={handleNextTurn}>
+                    {t.nextTurn}
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Right side: All Team Timelines */}
+            <div className="timelines-section" key={animationKey}>
+              <h3>{t.timeline}s:</h3>
+              {/* Reorder teams to put current team first */}
+              {[...Array(teams.length)].map((_, offset) => {
+                const index = (currentTeamIndex + offset) % teams.length;
+                return (
+                  <div 
+                    key={`${animationKey}-${index}`}
+                    className={`team-timeline-container ${index === currentTeamIndex ? 'active' : ''}`}
+                    style={{ 
+                      animationDelay: `${offset * 0.1}s`,
+                      order: offset
+                    }}
+                  >
+                    <div className="team-timeline-header">
+                      <h4>{teams[index]}</h4>
+                      <span className="team-score">{scores[index]} / {winningScore}</span>
+                    </div>
+                    <Timeline 
+                      timeline={teamTimelines[index]} 
+                      showYears={true} 
+                      language={language} 
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
-
-      {currentSong && gamePhase === 'playing' && (
-        <div className="song-section">
-          <SongPlayer song={currentSong} language={language} />
-          <div className="timeline-container">
-            <h3>{t.timeline}:</h3>
-            <Timeline timeline={currentTimeline} showYears={true} language={language} />
-            <PlacementButtons 
-              timeline={currentTimeline}
-              onPlacement={handlePlacement}
-              language={language}
-            />
-          </div>
-        </div>
-      )}
-
-      {gamePhase === 'result' && lastPlacement && (
-        <div className="result-section">
-          <div className={`result-message ${lastPlacement.correct ? 'correct' : 'incorrect'}`}>
-            {lastPlacement.correct ? (
-              <>
-                <h2>{t.correct}</h2>
-                <p>{t.correctPlacement}</p>
-              </>
-            ) : (
-              <>
-                <h2>{t.incorrect}</h2>
-                <p><b>{currentSong.title}</b> {t.actualYear} <b>{currentSong.year}</b></p>
-              </>
-            )}
-          </div>
-          
-          <div className="timeline-container">
-            <h3>{currentTeam} {t.timeline}:</h3>
-            <Timeline timeline={teamTimelines[currentTeamIndex]} showYears={true} language={language} />
-          </div>
-
-          <button className="next-turn-button" onClick={handleNextTurn}>
-            {t.nextTurn}
-          </button>
-        </div>
-      )}
-      </>
+        </>
       )}
     </div>
   );

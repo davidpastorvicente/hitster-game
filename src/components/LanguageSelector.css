@@ -1,8 +1,7 @@
 .language-selector {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  z-index: 1000;
+  position: absolute;
+  right: 16px;
+  top: 16px;
   display: flex;
   gap: 0.5rem;
 }

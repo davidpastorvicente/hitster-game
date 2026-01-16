@@ -1,5 +1,5 @@
 .placement-buttons {
-  margin-top: 2rem;
+  margin: 0 auto;
 }
 
 .placement-instruction {
@@ -7,7 +7,7 @@
   font-weight: bold;
   font-size: 1.1rem;
   margin-bottom: 1rem;
-  color: #1a1a2e;
+  color: white;
 }
 
 .button-grid {
