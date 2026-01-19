@@ -1,25 +1,25 @@
 .game-setup {
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
 .game-setup h1 {
   font-size: 3rem;
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   color: var(--primary);
 }
 
 @media (max-width: 767px) {
   .game-setup h1 {
-    margin-top: 1rem;
+    margin-top: 3.5rem;
   }
 }
 
 .subtitle {
   font-size: 1.2rem;
   color: var(--text-secondary);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   font-weight: 500;
 }
 

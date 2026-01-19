@@ -157,6 +157,10 @@
   background: linear-gradient(135deg, var(--danger) 0%, var(--danger-dark) 100%);
 }
 
+.result-album-cover {
+  height: 150px;
+}
+
 .result-album-cover img {
   width: 150px;
   height: 150px;
@@ -203,8 +207,13 @@
   font-size: 1.1rem;
 }
 
+@media (min-width: 768px) {
+  .song-details {
+    margin-top: 1.5rem;
+  }
+}
+
 .song-details {
-  margin-top: 1rem;
   padding-top: 1rem;
   border-top: 2px solid rgba(255, 255, 255, 0.3);
 }
@@ -225,6 +234,7 @@
   font-size: 1.8rem;
   font-weight: bold;
   margin-top: 0.5rem;
+  line-height: 1.8rem;
 }
 
 .next-turn-button {
