@@ -36,7 +36,7 @@ export default function GameSetup({ onStartGame, language }) {
       
       <div className="setup-form">
         <div className="form-group">
-          <label>{t.teamsLabel}</label>
+          <label>{t.teamsNumber}</label>
           <div className="team-selector">
             {[2, 3, 4, 5, 6].map(num => (
               <button
@@ -51,7 +51,7 @@ export default function GameSetup({ onStartGame, language }) {
         </div>
 
         <div className="form-group">
-          <label>{t.teamsLabel}</label>
+          <label>{t.teamNames}</label>
           <div className="team-names">
             {teamNames.map((name, index) => (
               <input
@@ -59,7 +59,6 @@ export default function GameSetup({ onStartGame, language }) {
                 type="text"
                 value={name}
                 onChange={(e) => handleTeamNameChange(index, e.target.value)}
-                placeholder={t.teamNamePlaceholder}
               />
             ))}
           </div>

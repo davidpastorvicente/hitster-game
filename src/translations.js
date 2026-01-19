@@ -3,14 +3,13 @@ export const translations = {
     // Game Setup
     setupTitle: "Hitster",
     setupSubtitle: "Build timelines by placing songs in chronological order!",
-    teamsLabel: "Number of teams:",
+    teamsNumber: "Number of teams:",
+    teamNames: "Team names:",
     winningScoreLabel: "Winning score:",
     songSetLabel: "Song set:",
-    teamNamePlaceholder: "Team name",
     startGameButton: "Start game",
     
     // Game Board
-    currentTurn: "Current turn:",
     timeline: "Timeline",
     score: "Score",
     
@@ -39,7 +38,7 @@ export const translations = {
     nextTurn: "Next turn",
     
     // Game Over
-    gameOver: "🎉 Game over! 🎉",
+    gameOver: "Game over! 🎉",
     winner: "Winner",
     finalTimeline: "Final timeline:",
     playAgain: "Play again"
@@ -48,15 +47,14 @@ export const translations = {
     // Game Setup
     setupTitle: "Hitster",
     setupSubtitle: "¡Construye timelines colocando canciones en orden cronológico!",
-    teamsLabel: "Número de equipos:",
+    teamsNumber: "Número de equipos:",
+    teamNames: "Nombres de los equipos:",
     winningScoreLabel: "Puntuación para ganar:",
     songSetLabel: "Tipo de canciones:",
-    teamNamePlaceholder: "Nombre del equipo",
     startGameButton: "Empezar",
     
     // Game Board
-    currentTurn: "Turno actual:",
-    timeline: "Timeline",
+    timeline: "Cronología",
     score: "Puntuación",
     
     // Song Player
@@ -67,14 +65,14 @@ export const translations = {
     pause: "Pausar",
     
     // Placement Buttons
-    placementInstruction: "¿Dónde pertenece esta canción en tu timeline?",
+    placementInstruction: "¿Dónde pertenece esta canción en tu cronología?",
     placeAsFirst: "Colocar primera",
     before: "Antes de",
     between: "Entre",
     after: "Después de",
     
     // Timeline
-    noSongs: "Aún no hay canciones. ¡Empieza a construir tu timeline!",
+    noSongs: "Aún no hay canciones. ¡Empieza a construir tu cronología!",
     
     // Results
     correct: "✓ ¡Correcto!",
@@ -84,9 +82,9 @@ export const translations = {
     nextTurn: "Siguiente turno",
     
     // Game Over
-    gameOver: "🎉 ¡Fin del juego! 🎉",
+    gameOver: "¡Fin del juego! 🎉",
     winner: "Ganador",
-    finalTimeline: "Timeline final:",
+    finalTimeline: "Cronología final:",
     playAgain: "Jugar de nuevo"
   }
 };
