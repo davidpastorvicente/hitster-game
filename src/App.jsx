@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import GameSetup from './components/GameSetup'
 import GameBoard from './components/GameBoard'
 import LanguageSelector from './components/LanguageSelector'
@@ -12,16 +12,10 @@ function App() {
   const [winningScore, setWinningScore] = useState(10)
   const [songSet, setSongSet] = useState('everything')
   
-  // Initialize language from localStorage or default to 'en'
+  // Initialize language from localStorage or default to 'es'
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('hitster_language') || 'en'
+    return localStorage.getItem('hitster_language') || 'es'
   })
-
-  // Initialize theme from localStorage
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') || 'light'
-    document.documentElement.setAttribute('data-theme', savedTheme)
-  }, [])
 
   // Persist language preference
   const handleLanguageChange = (newLanguage) => {
