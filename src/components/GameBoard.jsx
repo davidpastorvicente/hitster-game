@@ -9,7 +9,7 @@ import './GameBoard.css';
 // Function to fetch Deezer preview URL and album cover dynamically
 async function fetchDeezerData(deezerId) {
   try {
-    const response = await fetch(`https://corsproxy.io/?${encodeURIComponent(`https://api.deezer.com/track/${deezerId}`)}`);
+    const response = await fetch(`https://cors.eu.org/https://api.deezer.com/track/${deezerId}`);
     const data = await response.json();
     return {
       previewUrl: data.preview || null,
