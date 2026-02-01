@@ -34,6 +34,7 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
   // Use overrides if provided (multiplayer mode)
   useEffect(() => {
     if (overrideState) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       if (overrideState.currentSong) setCurrentSong(overrideState.currentSong);
       if (overrideState.teamTimelines) setTeamTimelines(overrideState.teamTimelines);
       if (overrideState.scores) setScores(overrideState.scores);
@@ -212,13 +213,14 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
                       </div>
                     </div>
                   </div>
-                  <button 
-                    className="next-turn-button" 
-                    onClick={handleNextTurn}
-                    disabled={isDisabled}
-                  >
-                    {t.nextTurn}
-                  </button>
+                  {!isDisabled && (
+                    <button 
+                      className="next-turn-button" 
+                      onClick={handleNextTurn}
+                    >
+                      {t.nextTurn}
+                    </button>
+                  )}
                 </>
               )}
             </div>

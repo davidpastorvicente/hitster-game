@@ -117,16 +117,22 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
     </div>
   );
 
-  async function handlePlaceSong(timeline, score, isCorrect) {
+  async function handlePlaceSong(timeline, score, isCorrect, position) {
     // Update team data in Firebase
     await updateTeamData(gameCode, myTeamIndex, {
       timeline: timeline,
       score: score
     });
     
-    // Update last placement
+    // Update last placement and game phase to 'result' so all players see it
     await updateGameState(gameCode, {
-      lastPlacement: { correct: isCorrect, teamIndex: myTeamIndex }
+      lastPlacement: { 
+        correct: isCorrect, 
+        teamIndex: myTeamIndex,
+        song: gameData.state.currentSong,
+        position: position
+      },
+      gamePhase: 'result'
     });
   }
 
@@ -153,8 +159,9 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
 // Component that handles the active turn gameplay
 function MultiplayerGameBoardActive({ gameConfig, gameData, language, onPlaceSong, onNextTurn, isMyTurn }) {
   const { songSet, winningScore, myTeamIndex } = gameConfig;
-  const [gamePhase, setGamePhase] = useState('playing');
-  const [lastPlacement, setLastPlacement] = useState(null);
+  // Use gamePhase from Firebase instead of local state so all players see the same phase
+  const gamePhase = gameData.state.gamePhase || 'playing';
+  const lastPlacement = gameData.state.lastPlacement || null;
 
   const currentSong = gameData.state.currentSong;
   const myTeam = gameData.teams[myTeamIndex] || {};
@@ -170,14 +177,10 @@ function MultiplayerGameBoardActive({ gameConfig, gameData, language, onPlaceSon
     const newScore = isCorrect ? myScore + 1 : myScore;
 
     if (isCorrect) {
-      await onPlaceSong(newTimeline, newScore, true);
-      setLastPlacement({ correct: true, position });
+      await onPlaceSong(newTimeline, newScore, true, position);
     } else {
-      await onPlaceSong(myTimeline, myScore, false);
-      setLastPlacement({ correct: false, position });
+      await onPlaceSong(myTimeline, myScore, false, position);
     }
-    
-    setGamePhase('result');
   };
 
   const checkIfCorrectPlacement = (timeline) => {
@@ -191,9 +194,6 @@ function MultiplayerGameBoardActive({ gameConfig, gameData, language, onPlaceSon
 
   const handleNextTurn = async () => {
     if (!isMyTurn) return; // Prevent turn advance if not my turn
-    
-    // Set loading phase first to hide song details
-    setGamePhase('loading');
     
     // Draw new song
     const selectedSongs = songSets[songSet]?.songs || songSets.everything.songs;
@@ -219,8 +219,7 @@ function MultiplayerGameBoardActive({ gameConfig, gameData, language, onPlaceSon
 
     const nextSong = { ...song, previewUrl, albumCover };
     await onNextTurn(nextSong);
-    setGamePhase('playing');
-    setLastPlacement(null);
+    // No need to set local state - Firebase handles gamePhase and lastPlacement
   };
 
   // Render using parts of GameBoard's JSX

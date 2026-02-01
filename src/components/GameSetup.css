@@ -262,11 +262,6 @@
   padding: 0.75rem 1.5rem;
 }
 
-.game-code-display {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
 .game-code-display h2, .game-code-display h3 {
   margin: 0 0 1rem 0;
   color: var(--text-primary);
@@ -304,10 +299,6 @@
 .copy-button:hover {
   background: var(--success-dark);
   transform: translateY(-2px);
-}
-
-.players-status {
-  margin: 2rem 0;
 }
 
 .players-status h3 {
