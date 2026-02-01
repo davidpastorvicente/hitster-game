@@ -6,21 +6,6 @@ import SongPlayer from './SongPlayer';
 import PlacementButtons from './PlacementButtons';
 import './GameBoard.css';
 
-// Function to fetch Deezer preview URL and album cover dynamically
-async function fetchDeezerData(deezerId) {
-  try {
-    const response = await fetch(`https://cors.eu.org/https://api.deezer.com/track/${deezerId}`);
-    const data = await response.json();
-    return {
-      previewUrl: data.preview || null,
-      albumCover: data.album?.cover_medium || null
-    };
-  } catch (error) {
-    console.error('Error fetching Deezer data:', error);
-    return { previewUrl: null, albumCover: null };
-  }
-}
-
 export default function GameBoard({ gameConfig, language, overrideState }) {
   // Extract config - handle both single and multiplayer mode
   const { teamNames, winningScore, songSet, mode, myTeamIndex } = gameConfig;
@@ -69,14 +54,9 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
     const randomIndex = Math.floor(Math.random() * availableToPlay.length);
     const song = availableToPlay[randomIndex];
 
-    // Fetch Deezer data dynamically if deezerId exists
-    let previewUrl;
-    let albumCover;
-    if (song.deezerId) {
-      const deezerData = await fetchDeezerData(song.deezerId);
-      previewUrl = deezerData.previewUrl;
-      albumCover = deezerData.albumCover;
-    }
+    // Use pre-stored Deezer data if available, otherwise fallback to YouTube
+    let previewUrl = song.deezerPreview || null;
+    let albumCover = song.albumCover || null;
     
     // Fallback to YouTube if no Deezer preview available
     if (!previewUrl) {

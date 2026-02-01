@@ -5,21 +5,6 @@ import { translations } from '../translations';
 import GameBoard from './GameBoard';
 import './MultiplayerGameBoard.css';
 
-// Function to fetch Deezer preview URL and album cover dynamically
-async function fetchDeezerData(deezerId) {
-  try {
-    const response = await fetch(`https://cors.eu.org/https://api.deezer.com/track/${deezerId}`);
-    const data = await response.json();
-    return {
-      previewUrl: data.preview || null,
-      albumCover: data.album?.cover_medium || null
-    };
-  } catch (error) {
-    console.error('Error fetching Deezer data:', error);
-    return { previewUrl: null, albumCover: null };
-  }
-}
-
 export default function MultiplayerGameBoard({ gameConfig, language }) {
   const { mode, gameCode, myTeamIndex, deviceId, isHost } = gameConfig;
   const [gameData, setGameData] = useState(null);
@@ -37,14 +22,9 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
     const randomIndex = Math.floor(Math.random() * selectedSongs.length);
     const song = selectedSongs[randomIndex];
     
-    // Fetch Deezer data
-    let previewUrl;
-    let albumCover;
-    if (song.deezerId) {
-      const deezerData = await fetchDeezerData(song.deezerId);
-      previewUrl = deezerData.previewUrl;
-      albumCover = deezerData.albumCover;
-    }
+    // Use pre-stored Deezer data if available, otherwise fallback to YouTube
+    let previewUrl = song.deezerPreview || null;
+    let albumCover = song.albumCover || null;
     
     if (!previewUrl) {
       previewUrl = `https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&controls=0`;
@@ -229,14 +209,9 @@ function MultiplayerGameBoardActive({ gameConfig, gameData, language, onPlaceSon
     const randomIndex = Math.floor(Math.random() * availableToPlay.length);
     const song = availableToPlay[randomIndex];
 
-    // Fetch Deezer data
-    let previewUrl;
-    let albumCover;
-    if (song.deezerId) {
-      const deezerData = await fetchDeezerData(song.deezerId);
-      previewUrl = deezerData.previewUrl;
-      albumCover = deezerData.albumCover;
-    }
+    // Use pre-stored Deezer data if available, otherwise fallback to YouTube
+    let previewUrl = song.deezerPreview || null;
+    let albumCover = song.albumCover || null;
     
     if (!previewUrl) {
       previewUrl = `https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&controls=0`;
