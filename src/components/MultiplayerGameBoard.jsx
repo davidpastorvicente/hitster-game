@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { subscribeToGame, updateGameState, updateTeamData, setHostDevice } from '../services/gameSession';
 import { songSets } from '../data/songs';
+import { translations } from '../translations';
 import GameBoard from './GameBoard';
+import './MultiplayerGameBoard.css';
 
 // Function to fetch Deezer preview URL and album cover dynamically
 async function fetchDeezerData(deezerId) {
@@ -65,7 +67,6 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
 
     // Initialize game if host
     if (isHost && !initialized) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       void initializeGame();
     }
 
@@ -109,42 +110,22 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
   }
 
   const currentTeam = gameData.teams[gameData.state.currentTeamIndex];
-  const t = language === 'es' ? 
-    { waitingForTurn: 'Esperando a' } : 
-    { waitingForTurn: 'Waiting for' };
+  const t = translations[language];
 
   // Show game board for everyone, with different banners
   return (
     <div>
-      {isMyTurn && myTeamIndex !== null ? (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '1rem', 
-          background: 'var(--primary)', 
-          color: 'white', 
-          fontWeight: 'bold', 
-          fontSize: '1.2rem',
-          position: 'sticky',
-          top: 0,
-          zIndex: 100
-        }}>
-          🎮 YOUR TURN!
-        </div>
-      ) : (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '1rem', 
-          background: 'var(--text-secondary)', 
-          color: 'white', 
-          fontWeight: 'bold', 
-          fontSize: '1.2rem',
-          position: 'sticky',
-          top: 0,
-          zIndex: 100
-        }}>
-          ⏳ {t.waitingForTurn} {currentTeam?.name || '...'}
-        </div>
-      )}
+      <div className="turn-indicator">
+        {isMyTurn && myTeamIndex !== null ? (
+          <div className="turn-badge active">
+            🎮 {t.yourTurn}
+          </div>
+        ) : (
+          <div className="turn-badge waiting">
+            ⏳ {t.waitingForTurn} {currentTeam?.name || '...'}
+          </div>
+        )}
+      </div>
       <MultiplayerGameBoardActive
         gameConfig={gameConfig}
         gameData={gameData}

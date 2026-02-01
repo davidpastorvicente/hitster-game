@@ -195,12 +195,13 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
               {currentSong && gamePhase === 'playing' && (
                 <>
                   <SongPlayer song={currentSong} language={language} />
-                  <PlacementButtons 
-                    timeline={currentTimeline}
-                    onPlacement={handlePlacement}
-                    language={language}
-                    disabled={isDisabled}
-                  />
+                  {!isDisabled && (
+                    <PlacementButtons 
+                      timeline={currentTimeline}
+                      onPlacement={handlePlacement}
+                      language={language}
+                    />
+                  )}
                 </>
               )}
               
