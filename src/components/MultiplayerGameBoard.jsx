@@ -153,6 +153,14 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
   async function handleNextTurn(nextSong) {
     const nextTeamIndex = (gameData.state.currentTeamIndex + 1) % gameData.teams.length;
     
+    // Set loading phase first before changing turn/song
+    await updateGameState(gameCode, {
+      gamePhase: 'loading'
+    });
+    
+    // Small delay to ensure all clients see loading state
+    await new Promise(resolve => setTimeout(resolve, 100));
+    
     await updateGameState(gameCode, {
       currentTeamIndex: nextTeamIndex,
       currentSong: nextSong,
@@ -203,6 +211,9 @@ function MultiplayerGameBoardActive({ gameConfig, gameData, language, onPlaceSon
 
   const handleNextTurn = async () => {
     if (!isMyTurn) return; // Prevent turn advance if not my turn
+    
+    // Set loading phase first to hide song details
+    setGamePhase('loading');
     
     // Draw new song
     const selectedSongs = songSets[songSet]?.songs || songSets.everything.songs;
