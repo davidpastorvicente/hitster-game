@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { songSets } from '../data/songs';
 import { translations } from '../translations';
+import { fetchDeezerPreview } from '../utils/deezer';
 import Timeline from './Timeline';
 import SongPlayer from './SongPlayer';
 import PlacementButtons from './PlacementButtons';
@@ -56,29 +57,7 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
     const song = availableToPlay[randomIndex];
 
     // Fetch Deezer preview URL at runtime (they expire after ~24h)
-    let previewUrl = null;
-    let albumCover = song.albumCover || null; // Album covers are permanent
-    
-    if (song.deezerId) {
-      try {
-        const corsProxy = 'https://corsproxy.io/?';
-        const response = await fetch(`${corsProxy}https://api.deezer.com/track/${song.deezerId}`);
-        const data = await response.json();
-        if (data.preview) {
-          previewUrl = data.preview;
-          if (!albumCover && data.album?.cover_medium) {
-            albumCover = data.album.cover_medium;
-          }
-        }
-      } catch (error) {
-        console.warn('Failed to fetch Deezer preview, falling back to YouTube:', error);
-      }
-    }
-    
-    // Fallback to YouTube if no Deezer preview available
-    if (!previewUrl) {
-      previewUrl = `https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&controls=0`;
-    }
+    const { previewUrl, albumCover } = await fetchDeezerPreview(song);
 
     setCurrentSong({ ...song, previewUrl, albumCover });
     setUsedSongIds([...usedIds, song.youtubeId]);
