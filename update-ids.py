@@ -17,8 +17,8 @@ def extract_songs_from_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Pattern to match songs with optional fields
-    pattern = r'\{\s*title:\s*"([^"]+)",\s*artist:\s*"([^"]+)",\s*year:\s*(\d+)(?:,\s*youtubeId:\s*"([^"]*)")?(?:,\s*deezerId:\s*"([^"]*)")?(?:,\s*deezerPreview:\s*"([^"]*)")?(?:,\s*albumCover:\s*"([^"]*)")?\s*\}'
+    # Pattern to match songs with optional fields (no deezerPreview)
+    pattern = r'\{\s*title:\s*"([^"]+)",\s*artist:\s*"([^"]+)",\s*year:\s*(\d+)(?:,\s*youtubeId:\s*"([^"]*)")?(?:,\s*deezerId:\s*"([^"]*)")?(?:,\s*albumCover:\s*"([^"]*)")?\s*\}'
     
     songs = []
     for match in re.finditer(pattern, content):
@@ -28,8 +28,7 @@ def extract_songs_from_file(filepath):
             'year': int(match.group(3)),
             'youtubeId': match.group(4) if match.group(4) else None,
             'deezerId': match.group(5) if match.group(5) else None,
-            'deezerPreview': match.group(6) if match.group(6) else None,
-            'albumCover': match.group(7) if match.group(7) else None
+            'albumCover': match.group(6) if match.group(6) else None
         }
         songs.append(song)
     
@@ -50,7 +49,7 @@ def fetch_youtube_id(ytmusic, title, artist):
         return None
 
 def fetch_deezer_data(title, artist):
-    """Fetch Deezer track ID, preview URL, and album cover from Deezer API."""
+    """Fetch Deezer track ID and album cover from Deezer API (preview URLs expire, so we fetch at runtime)."""
     try:
         search_query = f"{title} {artist}"
         url = "https://api.deezer.com/search"
@@ -65,7 +64,6 @@ def fetch_deezer_data(title, artist):
                 track = data['data'][0]
                 return {
                     'deezerId': str(track['id']),
-                    'deezerPreview': track.get('preview'),
                     'albumCover': track.get('album', {}).get('cover_medium')
                 }
         
@@ -76,7 +74,7 @@ def fetch_deezer_data(title, artist):
         return None
 
 def update_songs_file(filepath, youtube_updates, deezer_updates):
-    """Update the songs.js file with new YouTube IDs, Deezer IDs, preview URLs, and album covers."""
+    """Update the songs.js file with new YouTube IDs, Deezer IDs, and album covers (no preview URLs)."""
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
     
@@ -94,7 +92,7 @@ def update_songs_file(filepath, youtube_updates, deezer_updates):
         
         # If no change, song doesn't have youtubeId yet, add it
         if new_content == content:
-            pattern_without_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+)((?:,\s*(?:deezerId|deezerPreview|albumCover):\s*"[^"]*")*\s*\}})'
+            pattern_without_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+)((?:,\s*(?:deezerId|albumCover):\s*"[^"]*")*\s*\}})'
             
             def replacer_without_id(match):
                 return match.group(1) + f', youtubeId: "{youtube_id}"' + match.group(2)
@@ -108,11 +106,10 @@ def update_songs_file(filepath, youtube_updates, deezer_updates):
         
         content = new_content
     
-    # Then, update Deezer data (ID, preview, album cover)
+    # Then, update Deezer data (ID and album cover only, no preview)
     for song_key, deezer_data in deezer_updates.items():
         title, artist = song_key
         deezer_id = deezer_data['deezerId']
-        deezer_preview = deezer_data.get('deezerPreview', '')
         album_cover = deezer_data.get('albumCover', '')
         
         # Update deezerId
@@ -125,7 +122,7 @@ def update_songs_file(filepath, youtube_updates, deezer_updates):
         
         # If no change, add deezerId
         if new_content == content:
-            pattern_without_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*")((?:,\s*(?:deezerPreview|albumCover):\s*"[^"]*")*\s*\}})'
+            pattern_without_id = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*")((?:,\s*albumCover:\s*"[^"]*")*\s*\}})'
             
             def replacer_without_id(match):
                 return match.group(1) + f', deezerId: "{deezer_id}"' + match.group(2)
@@ -139,33 +136,9 @@ def update_songs_file(filepath, youtube_updates, deezer_updates):
         
         content = new_content
         
-        # Update or add deezerPreview
-        if deezer_preview:
-            pattern_with_preview = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*",\s*deezerId:\s*"[^"]*",\s*deezerPreview:\s*")[^"]*(")' 
-            
-            def replacer_with_preview(match):
-                return match.group(1) + deezer_preview + match.group(2)
-            
-            new_content = re.sub(pattern_with_preview, replacer_with_preview, content, flags=re.DOTALL)
-            
-            if new_content == content:
-                pattern_without_preview = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*",\s*deezerId:\s*"[^"]*")((?:,\s*albumCover:\s*"[^"]*")*\s*\}})'
-                
-                def replacer_without_preview(match):
-                    return match.group(1) + f', deezerPreview: "{deezer_preview}"' + match.group(2)
-                
-                new_content = re.sub(
-                    pattern_without_preview, 
-                    replacer_without_preview, 
-                    content, 
-                    flags=re.DOTALL
-                )
-            
-            content = new_content
-        
         # Update or add albumCover
         if album_cover:
-            pattern_with_cover = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*",\s*deezerId:\s*"[^"]*"(?:,\s*deezerPreview:\s*"[^"]*")?,\s*albumCover:\s*")[^"]*(")' 
+            pattern_with_cover = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*",\s*deezerId:\s*"[^"]*",\s*albumCover:\s*")[^"]*(")' 
             
             def replacer_with_cover(match):
                 return match.group(1) + album_cover + match.group(2)
@@ -173,7 +146,7 @@ def update_songs_file(filepath, youtube_updates, deezer_updates):
             new_content = re.sub(pattern_with_cover, replacer_with_cover, content, flags=re.DOTALL)
             
             if new_content == content:
-                pattern_without_cover = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*",\s*deezerId:\s*"[^"]*"(?:,\s*deezerPreview:\s*"[^"]*")?)(\s*\}})'
+                pattern_without_cover = rf'(\{{\s*title:\s*"{re.escape(title)}",\s*artist:\s*"{re.escape(artist)}",\s*year:\s*\d+,\s*youtubeId:\s*"[^"]*",\s*deezerId:\s*"[^"]*")(\s*\}})'
                 
                 def replacer_without_cover(match):
                     return match.group(1) + f', albumCover: "{album_cover}"' + match.group(2)
@@ -198,7 +171,7 @@ def main():
     
     print("=" * 60)
     print("ID Updater for TimeSong Game")
-    print("Fetches YouTube IDs, Deezer IDs, previews, and covers")
+    print("Fetches YouTube IDs, Deezer IDs, and album covers")
     print("=" * 60)
     print()
     
@@ -214,7 +187,7 @@ def main():
         
         # Find songs without YouTube IDs or complete Deezer data
         missing_youtube = [s for s in songs if not s['youtubeId'] or s['youtubeId'].strip() == '']
-        missing_deezer = [s for s in songs if not s['deezerId'] or s['deezerId'].strip() == '' or not s['deezerPreview'] or not s['albumCover']]
+        missing_deezer = [s for s in songs if not s['deezerId'] or s['deezerId'].strip() == '' or not s['albumCover']]
         
         if not missing_youtube and not missing_deezer:
             print("✅ All songs already have YouTube IDs and complete Deezer data!")

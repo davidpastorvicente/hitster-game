@@ -55,9 +55,25 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
     const randomIndex = Math.floor(Math.random() * availableToPlay.length);
     const song = availableToPlay[randomIndex];
 
-    // Use pre-stored Deezer data if available, otherwise fallback to YouTube
-    let previewUrl = song.deezerPreview || null;
-    let albumCover = song.albumCover || null;
+    // Fetch Deezer preview URL at runtime (they expire after ~24h)
+    let previewUrl = null;
+    let albumCover = song.albumCover || null; // Album covers are permanent
+    
+    if (song.deezerId) {
+      try {
+        const corsProxy = 'https://corsproxy.io/?';
+        const response = await fetch(`${corsProxy}https://api.deezer.com/track/${song.deezerId}`);
+        const data = await response.json();
+        if (data.preview) {
+          previewUrl = data.preview;
+          if (!albumCover && data.album?.cover_medium) {
+            albumCover = data.album.cover_medium;
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to fetch Deezer preview, falling back to YouTube:', error);
+      }
+    }
     
     // Fallback to YouTube if no Deezer preview available
     if (!previewUrl) {
