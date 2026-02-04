@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { subscribeToGame, updateGameState, updateTeamData, setHostDevice } from '../services/gameSession';
 import { songSets } from '../data/songs';
 import { translations } from '../translations';
@@ -10,11 +10,12 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
   const { mode, gameCode, myTeamIndex, deviceId, isHost } = gameConfig;
   const [gameData, setGameData] = useState(null);
   const [isMyTurn, setIsMyTurn] = useState(false);
-  const [initialized, setInitialized] = useState(false);
+  const initializingRef = useRef(false);
 
   // Initialize game state for host
   const initializeGame = useCallback(async () => {
-    if (!isHost || initialized || !gameCode) return;
+    if (!isHost || initializingRef.current || !gameCode) return;
+    initializingRef.current = true;
     
     const { songSet } = gameConfig;
     const selectedSongs = songSets[songSet]?.songs || songSets.everything.songs;
@@ -25,24 +26,24 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
     
     // Fetch Deezer preview URL at runtime (they expire after ~24h)
     const { previewUrl, albumCover } = await fetchDeezerPreview(song);
+    const firstSong = { ...song, previewUrl, albumCover };
 
     // Initialize game state in Firebase
     await updateGameState(gameCode, {
       gamePhase: 'playing',
-      currentSong: { ...song, previewUrl, albumCover },
+      currentSong: firstSong,
       usedSongIds: [song.youtubeId],
       currentTeamIndex: 0
     });
 
     await setHostDevice(gameCode, deviceId);
-    setInitialized(true);
-  }, [isHost, initialized, gameCode, gameConfig, deviceId]);
+  }, [isHost, gameCode, gameConfig, deviceId]);
 
   useEffect(() => {
     if (mode !== 'multi' || !gameCode) return;
 
     // Initialize game if host
-    if (isHost && !initialized) {
+    if (isHost) {
       void initializeGame();
     }
 
@@ -53,11 +54,6 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
         // Check if it's this device's turn
         if (myTeamIndex !== null && myTeamIndex !== undefined) {
           const isTurn = data.state.currentTeamIndex === myTeamIndex;
-          console.log('Turn check:', {
-            myTeamIndex,
-            currentTeamIndex: data.state.currentTeamIndex,
-            isMyTurn: isTurn
-          });
           setIsMyTurn(isTurn);
         } else {
           // Host spectator mode (shouldn't happen anymore)
@@ -69,7 +65,7 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
     return () => {
       if (unsubscribe) unsubscribe();
     };
-  }, [mode, gameCode, myTeamIndex, isHost, initialized, initializeGame]);
+  }, [mode, gameCode, myTeamIndex, isHost, initializeGame]);
 
   // Single-device mode - just render GameBoard directly
   if (mode === 'single') {
@@ -80,7 +76,7 @@ export default function MultiplayerGameBoard({ gameConfig, language }) {
   if (!gameData || !gameData.state.currentSong) {
     return (
       <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-primary)' }}>
-        <h2>Loading game...</h2>
+        <h2>⏳ {isHost ? 'Preparing first song...' : 'Waiting for host to start...'}</h2>
       </div>
     );
   }

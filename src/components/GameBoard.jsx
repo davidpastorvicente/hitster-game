@@ -74,9 +74,12 @@ export default function GameBoard({ gameConfig, language, overrideState }) {
   }, [drawNewSong, songSet]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void loadSongs();
-  }, [loadSongs]);
+    // Only initialize songs in single-device mode
+    if (!overrideState) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void loadSongs();
+    }
+  }, [loadSongs, overrideState]);
 
   const handlePlacement = (position) => {
     // Use override callback if provided (multiplayer mode)

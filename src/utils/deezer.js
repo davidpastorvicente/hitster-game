@@ -32,7 +32,6 @@ export async function fetchDeezerPreview(song) {
           if (!albumCover && data.album?.cover_medium) {
             albumCover = data.album.cover_medium;
           }
-          console.log(`✓ Deezer preview fetched via ${proxy}`);
           break; // Success, exit loop
         }
       } catch (error) {
